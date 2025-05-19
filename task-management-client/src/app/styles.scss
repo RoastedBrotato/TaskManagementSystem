@@ -1,0 +1,47 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+html, body { 
+  height: 100%; 
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.app-content {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Mat-card styles for Angular Material v19 */
+.mat-mdc-card {
+  margin-bottom: 16px;
+}
+
+.mat-mdc-card-header {
+  padding: 16px 16px 0;
+}
+
+.mat-mdc-card-content {
+  padding: 16px;
+}
+
+/* Table styles */
+.mat-mdc-table {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Button spacing */
+button + button {
+  margin-left: 8px;
+}

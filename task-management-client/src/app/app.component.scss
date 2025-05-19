@@ -1,0 +1,17 @@
+.app-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  .app-content {
+    margin: 20px;
+  }
+  
+  .user-menu {
+    margin-left: 8px;
+  }

@@ -1,0 +1,24 @@
+<div class="dashboard-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Dashboard</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>Welcome, {{ currentUser?.username }}</h2>
+        <p>You are logged in as a {{ currentUser?.role }}</p>
+  
+        <!-- Navigation Tabs -->
+        <mat-tab-group>
+          <mat-tab label="My Tasks">
+            <app-user-tasks></app-user-tasks>
+          </mat-tab>
+          <mat-tab label="All Tasks" *ngIf="isAdmin">
+            <app-task-list></app-task-list>
+          </mat-tab>
+          <mat-tab label="User Management" *ngIf="isAdmin">
+            <app-user-list></app-user-list>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+  </div>
