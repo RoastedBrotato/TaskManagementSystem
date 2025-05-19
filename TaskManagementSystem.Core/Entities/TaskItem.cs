@@ -12,12 +12,12 @@ namespace TaskManagementSystem.Core.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
-        public TaskStatus Status { get; set; }
+        public TaskItemStatus Status { get; set; }
         public int? AssignedUserId { get; set; }
         public User AssignedUser { get; set; }
     }
 
-    public enum TaskStatus
+    public enum TaskItemStatus
     {
         Pending,
         InProgress,
