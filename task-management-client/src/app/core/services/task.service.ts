@@ -6,7 +6,6 @@ import {
   Task, 
   CreateTaskRequest, 
   UpdateTaskRequest, 
-  UpdateTaskStatusRequest,
   TaskStatus 
 } from '../models/task.model';
 
@@ -29,15 +28,25 @@ export class TaskService {
   }
 
   createTask(task: CreateTaskRequest): Observable<Task> {
-    return this.http.post<Task>(`${environment.apiUrl}/api/tasks`, task);
+    // Ensure numeric status is sent
+    const taskRequest = {
+      ...task,
+      status: Number(task.status)
+    };
+    return this.http.post<Task>(`${environment.apiUrl}/api/tasks`, taskRequest);
   }
 
   updateTask(id: number, task: UpdateTaskRequest): Observable<void> {
-    return this.http.put<void>(`${environment.apiUrl}/api/tasks/${id}`, task);
+    // Ensure numeric status is sent
+    const taskRequest = {
+      ...task,
+      status: Number(task.status)
+    };
+    return this.http.put<void>(`${environment.apiUrl}/api/tasks/${id}`, taskRequest);
   }
 
   updateTaskStatus(id: number, status: TaskStatus): Observable<void> {
-    return this.http.put<void>(`${environment.apiUrl}/api/tasks/${id}/status`, { status });
+    return this.http.put<void>(`${environment.apiUrl}/api/tasks/${id}/status`, { status: Number(status) });
   }
 
   deleteTask(id: number): Observable<void> {
