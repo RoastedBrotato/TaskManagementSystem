@@ -1,7 +1,3 @@
-Certainly! Here’s a revised version of your README.md with improved heading hierarchy, proper Markdown bullet points, and enhanced readability. All sections are clearly formatted, code samples are in code blocks, and lists are consistent.
-
----
-
 # Task Management System
 
 ## Overview
