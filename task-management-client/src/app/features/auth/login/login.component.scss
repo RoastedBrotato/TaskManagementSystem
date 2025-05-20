@@ -2,13 +2,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);
   padding: 20px;
+  background: #f5f5f5;
 }
 
 mat-card {
   width: 100%;
   max-width: 400px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
 }
 
 mat-card-title {
@@ -17,7 +21,16 @@ mat-card-title {
 
 mat-form-field {
   width: 100%;
-  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.mat-form-field-infix {
+  padding: 0 12px;
+}
+
+input.mat-input-element {
+  padding: 12px;
+  font-size: 14px;
 }
 
 .form-field {

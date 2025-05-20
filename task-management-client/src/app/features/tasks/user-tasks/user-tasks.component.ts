@@ -4,6 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TaskService } from '../../../core/services/task.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TaskStatus } from '../../../core/models/task.model';
+import { StatusDialogComponent } from '../status-dialog/status-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 // Material imports
 import { MatTableModule } from '@angular/material/table';
@@ -26,7 +28,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule // Add this
   ]
 })
 export class UserTasksComponent implements OnInit {
@@ -44,7 +47,8 @@ export class UserTasksComponent implements OnInit {
 
   constructor(
     private taskService: TaskService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog // Add this
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +75,16 @@ export class UserTasksComponent implements OnInit {
   }
   
   startEditingStatus(task: any): void {
-    this.editingTask = task;
+    const dialogRef = this.dialog.open(StatusDialogComponent, {
+      width: '300px',
+      data: { currentStatus: task.status }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.updateTaskStatus(task, result);
+      }
+    });
   }
   
   stopEditingStatus(): void {
@@ -81,8 +94,8 @@ export class UserTasksComponent implements OnInit {
   updateTaskStatus(task: any, newStatus: number): void {
     this.taskService.updateTaskStatus(task.id, newStatus).subscribe({
       next: () => {
+        console.log(`Task ${task.id} status updated to ${newStatus}`);
         task.status = newStatus;
-        this.editingTask = null;
       },
       error: (error) => {
         console.error('Error updating task status:', error);

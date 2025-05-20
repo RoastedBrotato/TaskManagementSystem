@@ -6,6 +6,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TaskFormComponent } from '../task-form/task-form.component';
 import { TaskStateService } from '../../../core/services/task-state.service';
 import { Task, TaskStatus } from '../../../core/models/task.model';
+import { StatusDialogComponent } from '../status-dialog/status-dialog.component';
 
 // Material imports
 import { MatTableModule } from '@angular/material/table';
@@ -39,7 +40,7 @@ export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
   users: any[] = [];
   isLoading = false;
-  isEditingStatus = false;
+  editingTaskId: number | null = null;
   displayedColumns: string[] = ['title', 'description', 'dueDate', 'status', 'assignedUser', 'actions'];
   
   // Update status enum values to match your backend
@@ -105,6 +106,19 @@ export class TaskListComponent implements OnInit {
     return status ? status.text : String(statusValue);
   }
 
+  startEditingStatus(task: Task): void {
+    const dialogRef = this.dialog.open(StatusDialogComponent, {
+      width: '300px',
+      data: { currentStatus: task.status }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.updateTaskStatus(task, result);
+      }
+    });
+  }
+
   updateTaskStatus(task: Task, newStatus: number): void {
     // For the All Tasks view, use the full update endpoint so that admin can update status even if they're not the owner.
     const updateRequest = {
@@ -119,7 +133,6 @@ export class TaskListComponent implements OnInit {
       next: () => {
         console.log(`Task ${task.id} status updated to ${newStatus}`);
         task.status = newStatus; // update local value
-        // Optionally exit editing mode here if using a per–task editing flag
       },
       error: (error) => {
         console.error('Error updating task status:', error);

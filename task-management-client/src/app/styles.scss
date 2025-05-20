@@ -1,9 +1,10 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 html, body { 
-  height: 100%; 
   margin: 0;
+  padding: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: #fafafa;
 }
 
 .app-toolbar {
@@ -46,6 +47,11 @@ button + button {
   margin-left: 8px;
 }
 
+/* Adding spacing to buttons globally */
+button {
+  margin: 4px;
+}
+
 .mat-form-field {
   width: 100%;
 }
@@ -68,4 +74,90 @@ button + button {
 
 .container {
   padding: 16px;
+}
+
+mat-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .app-content {
+    padding: 10px;
+  }
+  
+  /* Adjust mat-card margins for mobile */
+  mat-card {
+    margin: 0 10px;
+  }
+}
+
+/* Fix for transparent dropdown panels - more aggressive overrides */
+::ng-deep .mat-mdc-select-panel {
+  background-color: white !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+  z-index: 2000 !important;
+  opacity: 1 !important;
+}
+
+::ng-deep .mat-mdc-option {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+/* Add these styles to ensure the mat-option background is opaque */
+::ng-deep .mat-mdc-option .mdc-list-item__content {
+  opacity: 1 !important;
+}
+
+/* Ensure the overlay background is opaque white */
+::ng-deep .cdk-overlay-pane {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+/* Force the overlay container to be above everything */
+::ng-deep .cdk-overlay-container {
+  position: fixed !important;
+  z-index: 2000 !important;
+  pointer-events: none;
+}
+
+::ng-deep .solid-select-panel {
+  background-color: white !important;
+  opacity: 1 !important;
+  border: 1px solid #ccc !important;
+}
+
+/* Ensure nothing shows through by adding a white pseudo-element */
+::ng-deep .mat-mdc-select-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  z-index: -1;
+}
+
+/* Add highlight color for selected or hovered options */
+::ng-deep .mat-mdc-option:hover:not(.mdc-list-item--disabled),
+::ng-deep .mat-mdc-option.mat-mdc-option-active {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+::ng-deep .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+  background-color: rgba(25, 118, 210, 0.12) !important;
+}
+
+/* Add these to the end of your existing styles */
+::ng-deep .cdk-overlay-backdrop {
+  z-index: 1400 !important;
+}
+
+::ng-deep .cdk-global-overlay-wrapper {
+  z-index: 1500 !important;
 }
