@@ -4,6 +4,8 @@ import { TaskService } from '../../../core/services/task.service';
 import { UserService } from '../../../core/services/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TaskFormComponent } from '../task-form/task-form.component';
+import { TaskStateService } from '../../../core/services/task-state.service';
+import { Task, TaskStatus } from '../../../core/models/task.model';
 
 // Material imports
 import { MatTableModule } from '@angular/material/table';
@@ -11,6 +13,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-task-list',
@@ -24,42 +29,56 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatIconModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule
   ]
 })
 export class TaskListComponent implements OnInit {
-  tasks: any[] = [];
+  tasks: Task[] = [];
   users: any[] = [];
   isLoading = false;
+  isEditingStatus = false;
   displayedColumns: string[] = ['title', 'description', 'dueDate', 'status', 'assignedUser', 'actions'];
   
+  // Update status enum values to match your backend
   statuses = [
-    { value: 'Todo', text: 'To Do' },
-    { value: 'InProgress', text: 'In Progress' },
-    { value: 'Completed', text: 'Completed' }
+    { value: 0, text: 'Pending' },
+    { value: 1, text: 'In Progress' },
+    { value: 2, text: 'Completed' }
   ];
 
   constructor(
     private taskService: TaskService,
     private userService: UserService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private taskState: TaskStateService
   ) {}
 
   ngOnInit(): void {
-    this.loadTasks();
     this.loadUsers();
+    
+    // Subscribe to the shared task state
+    this.taskState.tasks$.subscribe(tasks => {
+      this.tasks = tasks;
+    });
+    
+    this.taskState.loading$.subscribe(loading => {
+      this.isLoading = loading;
+    });
+    
+    // Initial load
+    this.loadTasks();
   }
 
   loadTasks(): void {
-    this.isLoading = true;
     this.taskService.getTasks().subscribe({
-      next: (tasks) => {
-        this.tasks = tasks;
-        this.isLoading = false;
+      next: () => {
+        // Tasks will be loaded via taskState subscription
       },
       error: (error) => {
         console.error('Error loading tasks:', error);
-        this.isLoading = false;
       }
     });
   }
@@ -81,12 +100,24 @@ export class TaskListComponent implements OnInit {
     return user ? user.username : 'Unknown User';
   }
 
-  getStatusText(statusValue: string): string {
+  getStatusText(statusValue: number): string {
     const status = this.statuses.find(s => s.value === statusValue);
-    return status ? status.text : statusValue;
+    return status ? status.text : String(statusValue);
   }
 
-  openTaskForm(task?: any): void {
+  updateTaskStatus(task: Task, newStatus: number): void {
+    this.taskService.updateTaskStatus(task.id, newStatus).subscribe({
+      next: () => {
+        // The taskState service will handle the update
+        console.log(`Task ${task.id} status updated to ${newStatus}`);
+      },
+      error: (error) => {
+        console.error('Error updating task status:', error);
+      }
+    });
+  }
+
+  openTaskForm(task?: Task): void {
     const dialogRef = this.dialog.open(TaskFormComponent, {
       width: '500px',
       data: { task, users: this.users }
@@ -98,7 +129,7 @@ export class TaskListComponent implements OnInit {
           // Update existing task
           this.taskService.updateTask(task.id, result).subscribe({
             next: () => {
-              this.loadTasks();
+              // No need to call loadTasks here as the taskState subscription will update the view
             },
             error: (error) => {
               console.error('Error updating task:', error);
@@ -108,7 +139,7 @@ export class TaskListComponent implements OnInit {
           // Create new task
           this.taskService.createTask(result).subscribe({
             next: () => {
-              this.loadTasks();
+              // No need to call loadTasks here as the taskState subscription will update the view
             },
             error: (error) => {
               console.error('Error creating task:', error);
@@ -123,7 +154,7 @@ export class TaskListComponent implements OnInit {
     if (confirm('Are you sure you want to delete this task?')) {
       this.taskService.deleteTask(taskId).subscribe({
         next: () => {
-          this.tasks = this.tasks.filter(task => task.id !== taskId);
+          // No need to manually filter tasks - the taskState subscription will handle it
         },
         error: (error) => {
           console.error('Error deleting task:', error);

@@ -33,7 +33,25 @@
       <!-- Status Column -->
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let task">{{ getStatusText(task.status) }}</td>
+        <td mat-cell *matCellDef="let task">
+          <div class="status-display" *ngIf="!isEditingStatus">
+            <span [ngClass]="'status-' + task.status">{{ getStatusText(task.status) }}</span>
+            <button mat-icon-button (click)="isEditingStatus = true">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+          <mat-form-field appearance="outline" class="status-select" *ngIf="isEditingStatus">
+            <mat-select 
+              [value]="task.status"
+              (selectionChange)="updateTaskStatus(task, $event.value); isEditingStatus = false"
+              (closed)="isEditingStatus = false"
+            >
+              <mat-option *ngFor="let status of statuses" [value]="status.value">
+                {{ status.text }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
       </ng-container>
 
       <!-- Assigned User Column -->
