@@ -354,5 +354,3 @@ When the application starts, the database is seeded with:
 ```
 
 ---
-
-Feel free to copy and replace your existing README.md with the above improved version! If you’d like further customization (badges, screenshots, etc.), let me know.
