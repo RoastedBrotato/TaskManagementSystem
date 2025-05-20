@@ -106,10 +106,20 @@ export class TaskListComponent implements OnInit {
   }
 
   updateTaskStatus(task: Task, newStatus: number): void {
-    this.taskService.updateTaskStatus(task.id, newStatus).subscribe({
+    // For the All Tasks view, use the full update endpoint so that admin can update status even if they're not the owner.
+    const updateRequest = {
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate,
+      status: newStatus,
+      assignedUserId: task.assignedUserId
+    };
+    
+    this.taskService.updateTask(task.id, updateRequest).subscribe({
       next: () => {
-        // The taskState service will handle the update
         console.log(`Task ${task.id} status updated to ${newStatus}`);
+        task.status = newStatus; // update local value
+        // Optionally exit editing mode here if using a per–task editing flag
       },
       error: (error) => {
         console.error('Error updating task status:', error);
