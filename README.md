@@ -2,8 +2,7 @@
 
 ## Overview
 
-This project is a full-stack task management application with role-based access control, built using **.NET 9** for the backend API and **Angular** for the frontend. The system enables administrators to manage users and tasks while providing regular users with a streamlined interface for tracking their assigned tasks.
-
+This project is a full-stack task management application with role-based access control, built using **.NET 9** for the backend API and **Angular** for the frontend.
 ---
 
 ## Table of Contents
